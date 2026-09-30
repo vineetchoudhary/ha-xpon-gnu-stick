@@ -1,0 +1,50 @@
+type: vertical-stack
+cards:
+  - type: entities
+    title: ONU Device Status
+    show_header_toggle: false
+    entities:
+      - entity: sensor.aot5222zy_device_name
+        name: Device name
+      - entity: sensor.aot5222zy_uptime
+        name: Uptime
+      - entity: sensor.aot5222zy_firmware_version
+        name: Firmware version
+      - entity: sensor.aot5222zy_cpu_usage
+        name: CPU usage
+      - entity: sensor.aot5222zy_memory_usage
+        name: Memory usage
+      - entity: sensor.aot5222zy_ip_address
+        name: IP address
+      - entity: sensor.aot5222zy_subnet_mask
+        name: Subnet mask
+      - entity: sensor.aot5222zy_mac_address
+        name: MAC address
+  - type: entities
+    title: ONU PON Status
+    show_header_toggle: false
+    entities:
+      - entity: sensor.aot5222zy_temperature
+        name: Temperature
+      - entity: sensor.aot5222zy_voltage
+        name: Voltage
+      - entity: sensor.aot5222zy_tx_power
+        name: Tx power
+      - entity: sensor.aot5222zy_rx_power
+        name: Rx power
+      - entity: sensor.aot5222zy_bias_current
+        name: Bias current
+      - entity: sensor.aot5222zy_onu_state
+        name: ONU state
+      - entity: sensor.aot5222zy_onu_id
+        name: ONU ID
+      - entity: sensor.aot5222zy_loid_status
+        name: LOID status
+  - type: history-graph
+    title: Optical power
+    hours_to_show: 24
+    entities:
+      - entity: sensor.aot5222zy_tx_power
+        name: Tx
+      - entity: sensor.aot5222zy_rx_power
+        name: Rx

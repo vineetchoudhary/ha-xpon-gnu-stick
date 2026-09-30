@@ -1,0 +1,57 @@
+{
+  "title": "XPON ONU Stick",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to your ONU stick",
+        "description": "Read the Device Status and PON Status pages. Enter the username and password used on the ONU login page. Leave credentials blank only for direct access.",
+        "data": {
+          "host": "Device address",
+          "username": "Username (optional)",
+          "password": "Password (optional)"
+        }
+      },
+      "reconfigure": {
+        "title": "Update ONU connection",
+        "description": "Read the Device Status and PON Status pages. Enter the username and password used on the ONU login page. Leave credentials blank only for direct access. Re-enter your password when changing the connection.",
+        "data": {
+          "host": "Device address",
+          "username": "Username (optional)",
+          "password": "Password (optional)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Authenticate with your ONU stick",
+        "description": "Enter the username and password used on the ONU login page.",
+        "data": {
+          "username": "Username (optional)",
+          "password": "Password (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not read both status pages. Check the address and that Home Assistant can reach the ONU management network.",
+      "invalid_auth": "The ONU rejected authentication or returned an unsupported login page. Check the username and password used on the device's login page.",
+      "invalid_host": "Enter a hostname, IP address, or HTTP(S) base URL without a path, query, or embedded credentials.",
+      "unsupported_device": "The pages do not contain the expected Device Status and PON Status fields, or a value is invalid.",
+      "username_required": "A username is required when a password is provided."
+    },
+    "abort": {
+      "already_configured": "This ONU stick is already configured.",
+      "unique_id_mismatch": "This address belongs to a different ONU stick. Add it as a separate integration.",
+      "reauth_successful": "Authentication updated successfully.",
+      "reconfigure_successful": "Connection updated successfully."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Polling interval",
+        "description": "Refresh every 10 to 3600 seconds. The default is 30 seconds. This changes only Home Assistant polling.",
+        "data": {
+          "scan_interval": "Refresh interval (seconds)"
+        }
+      }
+    }
+  }
+}
