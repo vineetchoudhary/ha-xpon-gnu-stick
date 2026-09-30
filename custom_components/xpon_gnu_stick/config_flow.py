@@ -14,7 +14,14 @@ from homeassistant.config_entries import (
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, TextSelectorType
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .api import OnuAuthError, OnuClient, OnuConnectionError, OnuParseError, normalize_host
 from .const import (
@@ -23,6 +30,7 @@ from .const import (
     MAX_SCAN_INTERVAL,
     MIN_SCAN_INTERVAL,
 )
+from .health import LIMIT_DEFAULTS, MEASUREMENT_UNITS, validate_limits
 
 
 def _connection_schema(defaults: dict[str, Any], *, include_host: bool) -> vol.Schema:
@@ -121,13 +129,20 @@ class OnuConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class OnuOptionsFlow(OptionsFlowWithReload):
-    """Change only Home Assistant's polling frequency."""
+    """Change Home Assistant polling and advisory status limits."""
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        return self.async_show_menu(step_id="init", menu_options=["polling", "status_limits"])
+
+    async def async_step_polling(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
+            return self.async_create_entry(
+                title="", data={**self.config_entry.options, **user_input}
+            )
         return self.async_show_form(
-            step_id="init",
+            step_id="polling",
             data_schema=vol.Schema(
                 {
                     vol.Required(
@@ -140,4 +155,50 @@ class OnuOptionsFlow(OptionsFlowWithReload):
                     ),
                 }
             ),
+        )
+
+    async def async_step_status_limits(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        defaults = {**LIMIT_DEFAULTS, **self.config_entry.options}
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            # Omitted optional bias limits clear a previously configured range.
+            limits = {**LIMIT_DEFAULTS, **user_input}
+            errors = validate_limits(limits)
+            if not errors:
+                return self.async_create_entry(
+                    title="", data={**self.config_entry.options, **limits}
+                )
+            defaults.update(limits)
+        fields: dict[Any, Any] = {}
+        for key, default in LIMIT_DEFAULTS.items():
+            measurement = key.rsplit("_", 1)[0]
+            unit = (
+                "dB"
+                if key == "rx_power_warning_margin"
+                else MEASUREMENT_UNITS.get(measurement, "°C")
+            )
+            if default is None:
+                marker = vol.Optional(key)
+                if defaults[key] is not None:
+                    marker = vol.Optional(key, description={"suggested_value": defaults[key]})
+                validator = vol.Any(
+                    None,
+                    NumberSelector(
+                        NumberSelectorConfig(
+                            mode=NumberSelectorMode.BOX, step="any", unit_of_measurement=unit
+                        )
+                    ),
+                )
+            else:
+                marker = vol.Required(key, default=defaults[key])
+                validator = NumberSelector(
+                    NumberSelectorConfig(
+                        mode=NumberSelectorMode.BOX, step="any", unit_of_measurement=unit
+                    )
+                )
+            fields[marker] = validator
+        return self.async_show_form(
+            step_id="status_limits", data_schema=vol.Schema(fields), errors=errors
         )

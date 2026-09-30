@@ -22,6 +22,13 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import OnuConfigEntry
 from .const import DOMAIN
 from .coordinator import OnuCoordinator
+from .health import (
+    MEASUREMENT_STATES,
+    ONU_STATUS_OPTIONS,
+    FriendlyStatus,
+    measurement_status,
+    registration_status,
+)
 
 PARALLEL_UPDATES = 0
 SENSORS = (
@@ -121,6 +128,24 @@ SENSORS = (
         key="loid_status", name="LOID status", icon="mdi:account-check-outline"
     ),
 )
+STATUS_SENSORS = tuple(
+    SensorEntityDescription(
+        key=f"{measurement}_status",
+        translation_key=f"{measurement}_status",
+        device_class=SensorDeviceClass.ENUM,
+        options=list(states),
+        icon="mdi:check-circle-outline",
+    )
+    for measurement, states in MEASUREMENT_STATES.items()
+) + (
+    SensorEntityDescription(
+        key="onu_registration_status",
+        translation_key="onu_registration_status",
+        device_class=SensorDeviceClass.ENUM,
+        options=list(ONU_STATUS_OPTIONS),
+        icon="mdi:access-point-network",
+    ),
+)
 
 
 async def async_setup_entry(
@@ -128,8 +153,11 @@ async def async_setup_entry(
     entry: OnuConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Add all 16 fields to one device."""
-    async_add_entities(OnuSensor(entry.runtime_data, description) for description in SENSORS)
+    """Add original readings and friendly status sensors to one device."""
+    async_add_entities(
+        [OnuSensor(entry.runtime_data, description) for description in SENSORS]
+        + [OnuStatusSensor(entry.runtime_data, description) for description in STATUS_SENSORS]
+    )
 
 
 class OnuSensor(CoordinatorEntity[OnuCoordinator], SensorEntity):
@@ -153,3 +181,33 @@ class OnuSensor(CoordinatorEntity[OnuCoordinator], SensorEntity):
     @property
     def native_value(self) -> str | float | int | None:
         return self.coordinator.data.values.get(self.entity_description.key)
+
+    @property
+    def extra_state_attributes(self) -> dict | None:
+        if self.entity_description.key == "onu_state":
+            status = registration_status(self.coordinator.data.values.get("onu_state"))
+            return {"description": status.attributes["description"]}
+        return None
+
+
+class OnuStatusSensor(OnuSensor):
+    """Explain a measurement or the GPON registration state using the shared poll."""
+
+    @property
+    def _status(self) -> FriendlyStatus:
+        if self.entity_description.key == "onu_registration_status":
+            return registration_status(self.coordinator.data.values.get("onu_state"))
+        measurement = self.entity_description.key.removesuffix("_status")
+        return measurement_status(
+            measurement,
+            self.coordinator.data.values.get(measurement),
+            dict(self.coordinator.entry.options),
+        )
+
+    @property
+    def native_value(self) -> str | None:
+        return self._status.state
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return self._status.attributes

@@ -46,10 +46,105 @@
   "options": {
     "step": {
       "init": {
-        "title": "Polling interval",
+        "title": "ONU options",
+        "menu_options": {
+          "polling": "Refresh interval",
+          "status_limits": "Status limits"
+        }
+      },
+      "polling": {
+        "title": "Refresh interval",
         "description": "Refresh every 10 to 3600 seconds. The default is 30 seconds. This changes only Home Assistant polling.",
         "data": {
           "scan_interval": "Refresh interval (seconds)"
+        }
+      },
+      "status_limits": {
+        "title": "Status limits",
+        "description": "Optical limits use GPON Class B+ defaults. Temperature and voltage use generic SFP guidelines. Adjust these advisory limits for your module. Set both bias current limits from its specification or leave both blank. This changes only Home Assistant status labels.",
+        "data": {
+          "rx_power_min": "Minimum receive power",
+          "rx_power_max": "Maximum receive power",
+          "rx_power_warning_margin": "Receive power warning margin",
+          "tx_power_min": "Minimum transmit power",
+          "tx_power_max": "Maximum transmit power",
+          "temperature_min": "Minimum temperature",
+          "temperature_warning": "Warm temperature threshold",
+          "temperature_max": "High temperature threshold",
+          "voltage_min": "Minimum voltage",
+          "voltage_max": "Maximum voltage",
+          "bias_current_min": "Minimum bias current (optional)",
+          "bias_current_max": "Maximum bias current (optional)"
+        }
+      }
+    },
+    "error": {
+      "invalid_limit": "Enter a finite number for this limit.",
+      "invalid_range": "The maximum must be greater than the minimum.",
+      "negative_limit": "Voltage and bias current limits cannot be negative.",
+      "invalid_temperature_warning": "The warm threshold must be at least the minimum and below the high threshold.",
+      "invalid_rx_margin": "Use a nonnegative margin smaller than half the receive power range.",
+      "bias_limits_required": "Set both minimum and maximum bias current or leave both blank."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "rx_power_status": {
+        "name": "Rx power status",
+        "state": {
+          "good": "Good",
+          "weak": "Weak signal",
+          "low": "Signal too weak",
+          "strong": "Strong signal",
+          "high": "Signal too strong"
+        }
+      },
+      "tx_power_status": {
+        "name": "Tx power status",
+        "state": {
+          "good": "Good",
+          "low": "Low transmit power",
+          "high": "High transmit power"
+        }
+      },
+      "temperature_status": {
+        "name": "Temperature status",
+        "state": {
+          "good": "Normal",
+          "low": "Cold",
+          "warm": "Warm",
+          "high": "Hot"
+        }
+      },
+      "voltage_status": {
+        "name": "Voltage status",
+        "state": {
+          "good": "Normal",
+          "low": "Low voltage",
+          "high": "High voltage"
+        }
+      },
+      "bias_current_status": {
+        "name": "Bias current status",
+        "state": {
+          "good": "Normal",
+          "low": "Low current",
+          "high": "High current",
+          "limits_not_set": "Limits not set",
+          "invalid": "Invalid reading"
+        }
+      },
+      "onu_registration_status": {
+        "name": "ONU registration status",
+        "state": {
+          "initial": "Starting up",
+          "standby": "Waiting for registration",
+          "serial_number": "Exchanging serial number",
+          "ranging": "Aligning link timing",
+          "connected": "Connected",
+          "recovering": "Recovering connection",
+          "disabled": "Disabled by provider",
+          "unrecognized": "Unrecognized state"
         }
       }
     }

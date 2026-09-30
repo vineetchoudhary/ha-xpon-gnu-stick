@@ -193,7 +193,7 @@ async def test_form_login_in_home_assistant_and_expiry_without_reauth_prompt(has
     assert result["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()
     entry = result["result"]
-    assert len(hass.states.async_all("sensor")) == 16
+    assert len(hass.states.async_all("sensor")) == 22
     state["sessions"].clear()
     await entry.runtime_data.async_refresh()
     assert hass.states.get("sensor.aot5222zy_onu_state").state == "O5"

@@ -21,6 +21,22 @@ cards:
       - entity: sensor.aot5222zy_mac_address
         name: MAC address
   - type: entities
+    title: ONU Health
+    show_header_toggle: false
+    entities:
+      - entity: sensor.aot5222zy_onu_registration_status
+        name: GPON connection
+      - entity: sensor.aot5222zy_rx_power_status
+        name: Receive signal
+      - entity: sensor.aot5222zy_tx_power_status
+        name: Transmit power
+      - entity: sensor.aot5222zy_temperature_status
+        name: Temperature
+      - entity: sensor.aot5222zy_voltage_status
+        name: Supply voltage
+      - entity: sensor.aot5222zy_bias_current_status
+        name: Laser bias current
+  - type: entities
     title: ONU PON Status
     show_header_toggle: false
     entities:
