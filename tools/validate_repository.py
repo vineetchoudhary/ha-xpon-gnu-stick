@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-REPOSITORY = "https://github.com/vineetchoudhary/ha-xpon-gnu-stick"
+REPOSITORY = "https://github.com/vineetchoudhary/ha-xpon-onu-stick"
 
 
 def validate_repository(root: Path) -> None:

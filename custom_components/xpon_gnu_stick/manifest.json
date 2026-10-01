@@ -3,10 +3,10 @@
   "name": "XPON ONU Stick",
   "codeowners": ["@vineetchoudhary"],
   "config_flow": true,
-  "documentation": "https://github.com/vineetchoudhary/ha-xpon-gnu-stick",
+  "documentation": "https://github.com/vineetchoudhary/ha-xpon-onu-stick",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/vineetchoudhary/ha-xpon-gnu-stick/issues",
+  "issue_tracker": "https://github.com/vineetchoudhary/ha-xpon-onu-stick/issues",
   "requirements": [],
   "version": "0.2.5"
 }

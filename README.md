@@ -31,7 +31,7 @@ The screenshots show one example installation. Use your own ONU management addre
 
 With [HACS installed and configured](https://www.hacs.xyz/docs/use/), open the repository directly:
 
-[![Open XPON ONU Stick in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=vineetchoudhary&repository=ha-xpon-gnu-stick&category=integration)
+[![Open XPON ONU Stick in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=vineetchoudhary&repository=ha-xpon-onu-stick&category=integration)
 
 Select your Home Assistant instance if prompted, download **XPON ONU Stick**, and restart Home Assistant. Then add **XPON ONU Stick** from **Settings → Devices & services → Add integration** and enter your ONU's address and credentials.
 
@@ -39,7 +39,7 @@ Alternatively, add the custom repository manually:
 
 1. Open **HACS** from the Home Assistant sidebar.
 2. Open the **⋮** menu in the top-right corner and select **Custom repositories**.
-3. Enter `https://github.com/vineetchoudhary/ha-xpon-gnu-stick` as the repository URL.
+3. Enter `https://github.com/vineetchoudhary/ha-xpon-onu-stick` as the repository URL.
 4. Choose **Integration** as the type/category and click **Add**.
 5. Search HACS for **XPON ONU Stick**, open it, and click **Download**.
 6. Restart Home Assistant.
