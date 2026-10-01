@@ -29,7 +29,7 @@ def test_live_device_fixture(device_html):
     assert values["memory_usage"] == 50.0
     assert values["ip_address"] == "192.0.2.1"
     assert values["subnet_mask"] == "255.255.255.0"
-    assert values["mac_address"] == "3cf75dafff48"
+    assert values["mac_address"] == "020000000001"
 
 
 def test_live_pon_fixture(pon_html):
@@ -108,8 +108,8 @@ def test_unsafe_or_invalid_hosts_rejected(host):
 
 
 def test_mac_identity():
-    assert normalize_mac("3cf75dafff48") == "3c:f7:5d:af:ff:48"
-    assert normalize_mac("3C:F7:5D:AF:FF:48") == "3c:f7:5d:af:ff:48"
+    assert normalize_mac("020000000001") == "02:00:00:00:00:01"
+    assert normalize_mac("02:00:00:00:AB:01") == "02:00:00:00:ab:01"
     with pytest.raises(OnuParseError):
         normalize_mac("not-a-mac")
 
@@ -119,7 +119,7 @@ async def test_client_reads_only_two_pages(onu_server):
     async with aiohttp.ClientSession() as session:
         status = await OnuClient(session, host).async_get_status()
     assert len(status.values) == 16
-    assert status.mac_address == "3c:f7:5d:af:ff:48"
+    assert status.mac_address == "02:00:00:00:00:01"
     assert requests == [("GET", "/status.asp", None), ("GET", "/status_pon.asp", None)]
 
 

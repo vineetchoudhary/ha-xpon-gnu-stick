@@ -68,7 +68,7 @@ async def test_setup_all_readings_and_friendly_statuses_and_unload(hass, onu_ser
     assert registration.state == "connected"
     assert registration.attributes["onu_state"] == "O5"
     assert "established" in states["sensor.aot5222zy_onu_state"].attributes["description"]
-    assert entry.unique_id == "3c:f7:5d:af:ff:48"
+    assert entry.unique_id == "02:00:00:00:00:01"
     entities = er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)
     assert len(entities) == 22
     assert len({entity.unique_id for entity in entities}) == 22
@@ -153,9 +153,9 @@ async def test_missing_readings_and_unrecognized_registration_state(hass, onu_se
 async def test_replaced_device_does_not_change_existing_identity(hass, onu_server):
     host, state, _ = onu_server
     entry = await add_device(hass, host)
-    state["device"] = state["device"].replace("3cf75dafff48", "001122334455")
+    state["device"] = state["device"].replace("020000000001", "001122334455")
     await entry.runtime_data.async_refresh()
-    assert entry.unique_id == "3c:f7:5d:af:ff:48"
+    assert entry.unique_id == "02:00:00:00:00:01"
     assert all(sensor.state == "unavailable" for sensor in hass.states.async_all("sensor"))
 
 
@@ -373,14 +373,14 @@ async def test_reconfigure_preserves_entity_identity(hass, onu_server):
 async def test_reconfigure_rejects_different_device(hass, onu_server):
     host, state, _ = onu_server
     entry = await add_device(hass, host)
-    state["device"] = state["device"].replace("3cf75dafff48", "001122334455")
+    state["device"] = state["device"].replace("020000000001", "001122334455")
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": "reconfigure", "entry_id": entry.entry_id},
         data={CONF_HOST: host},
     )
     assert result["reason"] == "unique_id_mismatch"
-    assert entry.unique_id == "3c:f7:5d:af:ff:48"
+    assert entry.unique_id == "02:00:00:00:00:01"
 
 
 async def test_auth_expiry_starts_reauth_and_restores_sensors(hass, onu_server):
@@ -408,7 +408,7 @@ async def test_startup_connection_failure_is_retryable(hass, onu_server, device_
             **parse_status_page(device_html, DEVICE_FIELDS),
             **parse_status_page(pon_html, PON_FIELDS),
         },
-        "3c:f7:5d:af:ff:48",
+        "02:00:00:00:00:01",
     )
     # First call validates the flow; the startup refresh then loses connectivity.
     with patch(
