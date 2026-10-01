@@ -2,6 +2,29 @@
 
 A local, read-only custom integration for the Device Status and PON Status pages on an ONU stick. It connects to the stick's own management web interface, independently of the router, switch, or media converter hosting it. Verified against an **AOT5222ZY running V1.0-220923**. 
 
+## Screenshots
+
+The screenshots show one example installation. Use your own ONU management address when configuring the integration. The address field starts blank.
+
+<table>
+  <tr>
+    <th>Measurements and friendly statuses</th>
+    <th>Device information and options</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      <img src="docs/screenshots/home-assistant-sensors.png" alt="Home Assistant Sensors section with optical readings, friendly statuses, and the GPON connection state" width="380">
+    </td>
+    <td valign="top">
+      <img src="docs/screenshots/home-assistant-diagnostics.png" alt="Home Assistant Diagnostic section with device, firmware, and network information" width="380">
+      <br>
+      <img src="docs/screenshots/integration-options.png" alt="ONU options menu with Refresh interval and Status limits" width="380">
+      <br>
+      <img src="docs/screenshots/refresh-interval.png" alt="Refresh interval form showing the default interval of 30 seconds" width="380">
+    </td>
+  </tr>
+</table>
+
 ## Install
 
 ### HACS (recommended)
@@ -29,6 +52,8 @@ Alternatively, add the custom repository manually:
 2. Restart Home Assistant.
 3. Open **Settings → Devices & services → Add integration**, and search for **XPON ONU Stick**.
 4. Enter your ONU's management address (hostname, IP address, or HTTP(S) base URL) and the username/password you use on its login page. The address field starts blank. Leave credentials blank only if the status pages are accessible directly.
+
+Continue with the [configuration guide](docs/configuration.md) to review the readings and customize the integration's options.
 
 
 ## Sensors
@@ -73,6 +98,8 @@ Each status includes a description in its attributes. Measurement statuses also 
 
 Open the integration's options and select **Status limits** to adjust the ranges for your module. Saving limits updates the status sensors in Home Assistant.
 
+See [Adjust the status limits](docs/configuration.md#5-adjust-the-status-limits) to change limits and set or clear bias current limits.
+
 | Measurement | Default classification |
 | --- | --- |
 | Rx power | Below −27 dBm is Signal too weak. From −27 to −25 dBm is Weak signal. Above −25 and below −10 dBm is Good. From −10 to −8 dBm is Strong signal. Above −8 dBm is Signal too strong. |
@@ -108,6 +135,8 @@ O1 to O5 follow the [Zyxel GPON registration guide](https://service-provider.zyx
 ## Refresh and connection settings
 
 The default refresh interval is **30 seconds**. Each poll makes two sequential GET requests shared by all sensors. Open the integration's options and select **Refresh interval** to change it, between 10 and 3600 seconds. Changing the interval preserves your status limits.
+
+The [configuration guide](docs/configuration.md#4-set-the-refresh-interval) shows the refresh interval form and how to apply changes.
 
 Use **Reconfigure** to change the device address or credentials. Re-enter the password if authentication is enabled. The MAC address provides a stable identity, so changing the management address does not create new entities. A different stick at the same address is rejected instead of overwriting the original device's readings.
 
